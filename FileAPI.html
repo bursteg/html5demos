@@ -1,0 +1,47 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>File API Sample</title>
+</head>
+<body>
+  <input type="file" id="files" name="files[]" multiple="multiple" />
+  <div id="list">
+  </div>
+  <script>
+    function handleFileSelect(evt) {
+      var output = [];
+
+      // Go over the list of files
+      var files = evt.target.files;
+      for (var i = 0, f; f = files[i]; i++) {
+
+        // Get the properties of the individual file
+        output.push('<li><strong>', f.name, '</strong> (',
+              f.type || 'n/a', ') - ',
+              f.size, ' bytes, last modified: ',
+              f.lastModifiedDate, '</li>');
+      }
+
+      // Add the output to the empty div
+      document.getElementById('list').innerHTML =
+    '<ul>' + output.join('') + '</ul>';
+    }
+
+
+
+    // Check for the various File API support.
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+
+      // File API is supported.
+      document.getElementById('files')
+        .addEventListener('change', handleFileSelect, false);
+
+    } else {
+      alert('File API is not supported.');
+    }
+  </script>
+  <script>
+  
+  </script>
+</body>
+</html>

@@ -1,0 +1,139 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <script src="Scripts/modernizr-2.0.6-development-only.js" type="text/javascript"></script>
+  <title></title>
+  <style>
+/* Prevent the text contents of draggable elements from being selectable. */
+[draggable] {
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.column {
+  height: 150px;
+  width: 150px;
+  float: left;
+  border: 2px solid #666666;
+  background-color: #ccc;
+  margin-right: 5px;
+  text-align: center;
+  cursor: move;
+}
+
+.column.over {
+  border: 2px dashed #000;
+}
+</style>
+</head>
+<body>
+  <div id="columns">
+    <div class="column" draggable="true">
+      <header>A</header>
+    </div>
+    <div class="column" draggable="true">
+      <header>B</header>
+    </div>
+    <div class="column" draggable="true">
+      <header>C</header>
+    </div>
+  </div>
+  <script>
+
+    Element.prototype.hasClassName = function (name) {
+      return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
+    };
+
+    Element.prototype.addClassName = function (name) {
+      if (!this.hasClassName(name)) {
+        this.className = this.className ? [this.className, name].join(' ') : name;
+      }
+    };
+
+    Element.prototype.removeClassName = function (name) {
+      if (this.hasClassName(name)) {
+        var c = this.className;
+        this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
+      }
+    };
+
+    var dragSrcEl = null;
+
+    if (Modernizr.draganddrop) {
+
+      // Browser supports HTML5 DnD.
+      var cols = document.querySelectorAll('#columns .column');
+      [ ].forEach.call(cols, function (col) {
+        col.addEventListener('dragstart', handleDragStart, false);
+        col.addEventListener('dragenter', handleDragEnter, false)
+        col.addEventListener('dragover', handleDragOver, false);
+        col.addEventListener('dragleave', handleDragLeave, false);
+        col.addEventListener('drop', handleDrop, false);
+        col.addEventListener('dragend', handleDragEnd, false);
+      });
+    }
+    else {
+      // Fallback to a library solution.
+      document.write('not supported');
+    }
+
+    function handleDragStart(e) {
+      this.style.opacity = '0.4';  // this / e.target is the source node.
+
+      dragSrcEl = this;
+
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', this.innerHTML);
+    }
+
+    function handleDragOver(e) {
+      if (e.preventDefault) {
+        e.preventDefault(); // Necessary. Allows us to drop.
+      }
+
+      e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
+      this.addClassName('over');
+
+      return false;
+    }
+
+    function handleDragEnter(e) {
+      // this / e.target is the current hover target.
+      this.addClassName('over');
+    }
+
+    function handleDragLeave(e) {
+      this.removeClassName('over');  // this / e.target is previous target element.
+    }
+
+    function handleDrop(e) {
+      // this / e.target is current target element.
+
+      if (e.stopPropagation) {
+        e.stopPropagation(); // stops the browser from redirecting.
+      }
+
+      // Don't do anything if dropping the same column we're dragging.
+      if (dragSrcEl != this) {
+        // Set the source column's HTML to the HTML of the columnwe dropped on.
+        dragSrcEl.innerHTML = this.innerHTML;
+        this.innerHTML = e.dataTransfer.getData('text/html');
+      }
+
+      return false;
+    }
+
+    function handleDragEnd(e) {
+      // this/e.target is the source node.
+
+      var cols = document.querySelectorAll('#columns .column');
+      [ ].forEach.call(cols, function (col) {
+        col.removeClassName('over');
+      });
+    }
+
+    
+  </script>
+</body>
+</html>

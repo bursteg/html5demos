@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+  <title>FileReader Sample</title>
+</head>
+<body>
+  <input type="file" id="files" name="files[]" multiple="multiple" />
+  <div id="list">
+  </div>
+  <script>
+    function handleFileSelect(evt) {
+      var output = [];
+
+      // Go over the list of files
+      var files = evt.target.files;
+      for (var i = 0, f; f = files[i]; i++) {
+
+        // Only process image files.
+        if (!f.type.match('image.*')) {
+          continue;
+        }
+
+        var reader = new FileReader();
+
+        // Closure to capture the file information.
+        reader.onload = function (e) {
+
+          // Render the image
+          var span = document.createElement('span');
+          span.innerHTML = '<img src="' + e.target.result + '"/>';
+          document.getElementById('list').insertBefore(span, null);
+        };
+
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(f);
+      }
+    }
+
+    // Check for the various File API support.
+    if (window.File && window.FileReader && window.FileList && window.Blob) {
+
+      // File API is supported.
+      document.getElementById('files')
+        .addEventListener('change', handleFileSelect, false);
+
+    } 
+    else {
+      alert('File API is not supported.');
+    }
+  </script>
+</body>
+</html>

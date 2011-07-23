@@ -1,0 +1,19 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+</head>
+<body>
+  <div id="myDiv">
+    <span id="1">First Span</span>
+    <span id="2">Second Span</span>
+  </div>
+  <script>
+    var newElement = document.createElement("span");
+    newElement.innerHTML = "New Span";
+    var d1 = document.getElementById("myDiv");
+    d1.insertBefore(newElement, document.getElementById("2"));
+  </script>
+</body>
+</html>
